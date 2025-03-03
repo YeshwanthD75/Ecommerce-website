@@ -1,0 +1,260 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <title>Ecommerce | Jumbo Cart</title>
+    <style>
+        :root {
+            --primary-color: #c04b4b;
+            --primary-hover: #a83e3e;
+            --accent-color: #124af3;
+            --accent-hover: #0d39be;
+            --background-color: #f4e4b5;
+            --text-color: #333333;
+            --light-text: #ffffff;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background-color: var(--primary-color) !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            color: var(--light-text) !important;
+            transition: all 0.3s ease;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+        
+        .navbar-brand:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+        
+        .nav-link {
+            color: var(--light-text) !important;
+            position: relative;
+            padding: 0.5rem 0.75rem !important;
+            margin: 0 0.25rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background-color: var(--light-text);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        
+        .nav-link:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        .nav-link:hover:after {
+            width: 80%;
+        }
+        
+        .nav-item.active .nav-link {
+            font-weight: bold;
+        }
+        
+        .nav-item.active .nav-link:after {
+            width: 80%;
+        }
+        
+        .btn-warning {
+            background-color: var(--accent-color);
+            border: none;
+            color: var(--light-text) !important;
+            transition: all 0.3s ease;
+            margin: 0 5px;
+            padding: 0.375rem 0.75rem;
+            border-radius: 4px;
+        }
+        
+        .btn-warning:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .cart-container {
+            position: relative;
+            display: inline-block;
+            margin-left: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .cart-container:hover {
+            transform: translateY(-2px);
+        }
+        
+        #cart-icon {
+            width: 30px;
+            height: 30px;
+            filter: brightness(0) invert(1);
+            transition: all 0.3s ease;
+        }
+        
+        #cart-totalnav {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: var(--accent-color);
+            color: var(--light-text);
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-toggler {
+            border-color: var(--light-text) !important;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-toggler:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        .container {
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .navbar-nav {
+                margin-top: 10px;
+            }
+            
+            .form-inline {
+                margin-top: 10px;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .btn-warning {
+                margin: 5px;
+            }
+            
+            .cart-container {
+                margin: 10px 0;
+            }
+        }
+    </style>
+    <script type="text/javascript">
+      var user = '{{request.user}}'
+      function getToken(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+      }
+      function getCookie(name){
+        var cookieArr = document.cookie.split(";")
+        for(var i=0; i<cookieArr.length; i++){
+          var cookiePair = cookieArr[i].split("=")
+          if(name==cookiePair[0].trim()){
+            return decodeURIComponent(cookiePair[1])
+          }
+        }
+        return null;
+      }
+      var cart = JSON.parse(getCookie('cart'))
+      var csrftoken = getToken('csrftoken');
+      if(cart==undefined){
+        cart={}
+        document.cookie ='cart=' +JSON.stringify(cart) + ";domain=;path=/"
+      }
+    </script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'store' %}">
+                <i class="fas fa-store mr-2"></i>Jumbo Store
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'store' %}">
+                            <i class="fas fa-shopping-bag mr-1"></i>Store
+                        </a>
+                    </li>
+                    <!-- You can add more nav items here -->
+                </ul>
+                <div class="form-inline my-2 my-lg-0">
+                    {% if request.user.is_authenticated %}
+                        <a href="/logout" class="btn btn-warning">
+                            <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                        </a>
+                    {% else %}
+                        <a href="/login" class="btn btn-warning">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Login
+                        </a>
+                        <a href="/register" class="btn btn-warning">
+                            <i class="fas fa-user-plus mr-1"></i>Register
+                        </a>
+                    {% endif %}
+                    <a href="{% url 'cart' %}" class="cart-container">
+                        <img id="cart-icon" src="{% static 'images/trolley.png' %}">
+                        <p id="cart-totalnav">{{cart_total}}</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <br>
+        {% block content %}
+        {% endblock content %}
+    </div>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="{% static 'js/cart.js' %}" type="text/javascript"></script>
+</body>
+</html>
