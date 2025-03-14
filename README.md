@@ -1,2 +1,2 @@
 # Ecommerce-website
-E-commerce website implemented using python django
+E-commerce website implemented using Python Django
